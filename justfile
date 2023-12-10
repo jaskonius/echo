@@ -10,7 +10,7 @@ check:
 
 alias r := run
 run: check
-    RUST_LOG=debug cargo run
+    cargo run
 
 push MESSAGE: check 
   git add -A 
