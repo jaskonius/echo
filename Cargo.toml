@@ -1,0 +1,17 @@
+[workspace.package]
+name = "echo"
+version = "0.1.0"
+edition = "2021"
+repository = "https://github.com/jaskonius/echo"
+license = "MIT"
+description = "A TUI music player"
+
+[workspace]
+resolver = "2"
+members = [
+  "echo-tui",
+  "echo-localfiles",
+]
+
+[workspace.dependencies]
+tracing = "0.1.40"
