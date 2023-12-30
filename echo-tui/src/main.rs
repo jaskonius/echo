@@ -28,7 +28,7 @@ fn main() -> Result<()> {
     tui.init().context("Failed to initialize terminal")?;
 
     // main loop
-    while app.is_running() {
+    while app.is_running {
         tui.draw(&mut app)?;
 
         match tui.events.next()? {
