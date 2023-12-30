@@ -92,7 +92,10 @@ pub fn render_center(_app: &mut App, chunk: Rect, frame: &mut Frame) {
         .for_each(|row| row.truncate(chunk.width / 4 - 3));
 
     let table = Table::new(rows.iter().map(|row| row.to_row()))
-        .header(Row::new(["Title", "Artist", "Album", "Duration"]))
+        .header(
+            Row::new(["Title", "Artist", "Album", "Duration"])
+                .style(Style::default().add_modifier(Modifier::BOLD)),
+        )
         .widths(&[
             Constraint::Percentage(25),
             Constraint::Percentage(25),
@@ -108,7 +111,7 @@ pub fn render_center(_app: &mut App, chunk: Rect, frame: &mut Frame) {
                 .border_type(BorderType::Rounded),
         );
 
-    let mut table_state = TableState::default().with_selected(Some(4));
+    let mut table_state = TableState::default().with_selected(Some(3));
 
     frame.render_stateful_widget(table, chunk, &mut table_state);
 }
