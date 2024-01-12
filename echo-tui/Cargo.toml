@@ -12,7 +12,7 @@ description = "TUI application"
 [dependencies]
 # Logging
 tracing.workspace = true
-tracing-subscriber = { version = "0.3.18", features = ["json"] }
+tracing-subscriber.workspace = true
 
 # Error handling
 anyhow = "1.0.76"
