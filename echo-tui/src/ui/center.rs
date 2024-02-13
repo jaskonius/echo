@@ -55,7 +55,7 @@ impl RowData {
     }
 }
 
-pub fn render_center(_app: &mut App, chunk: Rect, frame: &mut Frame) {
+pub fn render_center(app: &mut App, chunk: Rect, frame: &mut Frame) {
     let mut rows = vec![
         RowData::new(
             String::from("Heart of Courage"),
@@ -106,7 +106,13 @@ pub fn render_center(_app: &mut App, chunk: Rect, frame: &mut Frame) {
         .highlight_symbol(">")
         .block(
             Block::default()
-                .title("Play Queue")
+                .title({
+                    if app.show_queue {
+                        "Play Queue"
+                    } else {
+                        "Not Play Queue"
+                    }
+                })
                 .borders(Borders::ALL)
                 .border_type(BorderType::Rounded),
         );
