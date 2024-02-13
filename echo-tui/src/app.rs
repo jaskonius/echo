@@ -1,5 +1,6 @@
 use crate::config::Config;
 use crate::{APP_NAME, CONFIG_FILE};
+use ratatui::widgets::ListState;
 use tracing::debug;
 
 /// Keeps track of application state.
@@ -13,6 +14,9 @@ pub struct App {
 
     /// Queue can be toggled, see [`Config::key_bindings`]
     pub show_queue: bool,
+
+    pub library_list_state: ListState,
+    pub playlist_list_state: ListState,
 }
 
 impl App {
@@ -21,6 +25,8 @@ impl App {
             is_running: true,
             config,
             show_queue: false,
+            library_list_state: ListState::default().with_selected(Some(0)),
+            playlist_list_state: ListState::default().with_selected(Some(0)),
         }
     }
 
