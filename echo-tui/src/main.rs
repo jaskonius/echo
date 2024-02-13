@@ -2,23 +2,27 @@ use anyhow::{Context, Result};
 
 use log::info;
 use ratatui::backend::CrosstermBackend;
-use std::fs::File;
-use std::io;
-use std::sync::Arc;
-use tracing_subscriber::{
-    filter::LevelFilter, layer::SubscriberExt, util::SubscriberInitExt, Layer,
-};
+
+use std::{fs, io};
+
+use tracing_subscriber::filter::LevelFilter;
 
 use echo_tui::app::App;
+use echo_tui::config::Config;
 use echo_tui::event::{Event, EventHandler};
 use echo_tui::handler::handle_key_events;
 use echo_tui::tui::Tui;
+use echo_tui::{APP_NAME, CONFIG_FILE};
 
 fn main() -> Result<()> {
-    init_logging(File::create("echo-tui.log").context("Failed to create log file")?);
+    setup_logging();
+
     info!("starting echo-tui");
 
-    let mut app = App::new();
+    let config: Config = confy::load(APP_NAME, CONFIG_FILE).context("Failed to load config")?;
+    info!("using config: {:?}", config);
+
+    let mut app = App::from(config);
 
     // setup stuff
     let backend = CrosstermBackend::new(io::stdout());
@@ -44,11 +48,29 @@ fn main() -> Result<()> {
     tui.exit().context("Failed to exit terminal")
 }
 
-fn init_logging(file: File) {
-    let file_log = tracing_subscriber::fmt::layer()
-        .json()
-        .with_writer(Arc::new(file));
-    tracing_subscriber::registry()
-        .with(file_log.with_filter(LevelFilter::DEBUG))
+fn setup_logging() {
+    let config_dir = confy::get_configuration_file_path(APP_NAME, CONFIG_FILE)
+        .expect("Failed to get path to config file")
+        .parent()
+        .expect("Failed to get parent directory")
+        .to_path_buf();
+
+    if !config_dir.exists() {
+        fs::create_dir_all(&config_dir).expect("Failed to create config directory");
+    }
+
+    // reminder: truncates file if already exists
+    let log_file =
+        fs::File::create(config_dir.join("echo.log")).expect("Failed to create log file");
+
+    // TODO: is there a better way to check for debug build vs release build?
+    #[cfg(debug_assertions)]
+    let log_level = LevelFilter::DEBUG;
+    #[cfg(not(debug_assertions))]
+    let log_level = LevelFilter::INFO;
+
+    tracing_subscriber::fmt()
+        .with_max_level(log_level)
+        .with_writer(log_file)
         .init();
 }

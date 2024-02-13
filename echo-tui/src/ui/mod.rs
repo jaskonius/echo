@@ -17,7 +17,7 @@ use ratatui::widgets::{Block, BorderType, Borders, Paragraph, Wrap};
 use ratatui::Frame;
 
 pub fn render(app: &mut App, frame: &mut Frame) {
-    if app.initial_state {
+    if app.show_greeting {
         render_greeting(frame);
     } else {
         render_app(app, frame);
