@@ -2,9 +2,13 @@ use crate::config::Config;
 use crate::{APP_NAME, CONFIG_FILE};
 use tracing::debug;
 
+/// Keeps track of application state.
 pub struct App {
+    /// Whether app is running. App will quit when set to false. Should **not** be set manually,
+    /// use [`app.quit()`](Self::quit) instead.
     pub is_running: bool,
 
+    /// Configuration loaded from config file.
     pub config: Config,
 
     /// Queue can be toggled, see [`Config::key_bindings`]
