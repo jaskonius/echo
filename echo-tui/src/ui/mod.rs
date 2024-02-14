@@ -73,7 +73,9 @@ fn render_greeting(frame: &mut Frame) {
  Welcome to Echo, your neat little command line music player!
 
  This project is in very early development, expect bugs and shitty performance. I use this project to learn Rust and stuff along the way.
- If you have suggestions, want to provide feedback or run into a bug (which is very likely), please open an issue on GitHub at https://github.com/jaskonius/echo. ")).block(
+ If you have suggestions, want to provide feedback or run into a bug (which is very likely), please open an issue on GitHub at https://github.com/jaskonius/echo.
+
+ Press any key to continue.")).block(
             Block::default()
                 .borders(Borders::ALL)
                 .border_type(BorderType::Rounded),

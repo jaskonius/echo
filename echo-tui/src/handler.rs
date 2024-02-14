@@ -13,5 +13,7 @@ pub fn handle_key_events(key_event: KeyEvent, app: &mut App) -> Result<()> {
         }
     }
 
+    app.config.show_greeting = false;
+
     Ok(())
 }
