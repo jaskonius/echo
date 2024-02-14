@@ -4,6 +4,27 @@ use anyhow::Result;
 use ratatui::widgets::ListState;
 use tracing::debug;
 
+pub enum HoveredSection {
+    None,
+    Library,
+    Playlist,
+    Main,
+}
+
+pub enum SelectedSection {
+    None,
+    Library,
+    Playlist,
+    Main,
+}
+
+pub enum HoveredItem {
+    None,
+    LibraryItem(usize),
+    PlaylistItem(usize),
+    MainItem(usize),
+}
+
 /// Keeps track of application state.
 pub struct App {
     /// Whether app is running. App will quit when set to false. Should **not** be set manually,
@@ -16,6 +37,10 @@ pub struct App {
     /// Queue can be toggled, see [`Config::key_bindings`]
     pub show_queue: bool,
 
+    pub hovered_section: HoveredSection,
+    pub selected_section: SelectedSection,
+    pub hovered_item: HoveredItem,
+
     pub library_list_state: ListState,
     pub playlist_list_state: ListState,
 }
@@ -27,6 +52,9 @@ impl App {
             is_running: true,
             config,
             show_queue: false,
+            hovered_section: HoveredSection::None,
+            selected_section: SelectedSection::None,
+            hovered_item: HoveredItem::None,
             library_list_state: ListState::default().with_selected(Some(0)),
             playlist_list_state: ListState::default().with_selected(Some(0)),
         })
@@ -38,6 +66,22 @@ impl App {
             self.show_queue, !self.show_queue
         );
         self.show_queue = !self.show_queue
+    }
+
+    pub fn left(&mut self) {
+        todo!()
+    }
+
+    pub fn down(&mut self) {
+        todo!()
+    }
+
+    pub fn up(&mut self) {
+        todo!()
+    }
+
+    pub fn right(&mut self) {
+        todo!()
     }
 
     pub fn quit(&mut self) {

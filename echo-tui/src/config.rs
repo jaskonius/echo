@@ -53,6 +53,18 @@ pub struct KeyBindings {
 
     /// Default: 'w'
     pub toggle_queue: char,
+
+    /// Default: 'h'
+    pub left: char,
+
+    /// Default: 'j'
+    pub down: char,
+
+    /// Default: 'k'
+    pub up: char,
+
+    /// Default: 'l'
+    pub right: char,
 }
 
 impl Default for KeyBindings {
@@ -60,6 +72,10 @@ impl Default for KeyBindings {
         Self {
             quit: 'q',
             toggle_queue: 'w',
+            left: 'h',
+            down: 'j',
+            up: 'k',
+            right: 'l',
         }
     }
 }
