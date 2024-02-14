@@ -1,5 +1,6 @@
 use crate::config::Config;
 use crate::{APP_NAME, CONFIG_FILE};
+use anyhow::Result;
 use ratatui::widgets::ListState;
 use tracing::debug;
 
@@ -20,14 +21,15 @@ pub struct App {
 }
 
 impl App {
-    pub fn from(config: Config) -> Self {
-        Self {
+    pub fn from(config: Config) -> Result<Self> {
+        config.validate()?;
+        Ok(Self {
             is_running: true,
             config,
             show_queue: false,
             library_list_state: ListState::default().with_selected(Some(0)),
             playlist_list_state: ListState::default().with_selected(Some(0)),
-        }
+        })
     }
 
     pub fn toggle_queue(&mut self) {
@@ -43,7 +45,9 @@ impl App {
 
         let config = Config {
             show_greeting: false,
-            key_bindings: self.config.key_bindings,
+            key_bindings: self.config.key_bindings.clone(),
+            hover_color: self.config.hover_color.clone(),
+            selected_color: self.config.selected_color.clone(),
         };
         confy::store(APP_NAME, CONFIG_FILE, config).expect("Failed to store config");
     }

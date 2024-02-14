@@ -1,9 +1,9 @@
 use anyhow::{Context, Result};
 
-use log::info;
 use ratatui::backend::CrosstermBackend;
 
 use std::{fs, io};
+use tracing::info;
 
 use tracing_subscriber::filter::LevelFilter;
 
@@ -22,7 +22,7 @@ fn main() -> Result<()> {
     let config: Config = confy::load(APP_NAME, CONFIG_FILE).context("Failed to load config")?;
     info!("using config: {:?}", config);
 
-    let mut app = App::from(config);
+    let mut app = App::from(config).context("Failed to initialize app")?;
 
     // setup stuff
     let backend = CrosstermBackend::new(io::stdout());

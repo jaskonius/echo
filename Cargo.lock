@@ -133,7 +133,6 @@ dependencies = [
  "anyhow",
  "confy",
  "crossterm",
- "log",
  "ratatui",
  "serde",
  "tracing",

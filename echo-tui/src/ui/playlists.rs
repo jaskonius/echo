@@ -8,7 +8,13 @@ pub fn render_playlists(app: &mut App, chunk: Rect, frame: &mut Frame) {
     let items = ["Playlist 1", "Playlist 2", "Playlist 3"].map(ListItem::new);
 
     let list = List::new(items)
-        .highlight_style(Style::default().add_modifier(Modifier::BOLD))
+        .highlight_style(
+            Style::default().add_modifier(Modifier::BOLD).fg(app
+                .config
+                .hover_color
+                .parse()
+                .expect("invalid color")),
+        )
         .highlight_symbol(">")
         .block(
             Block::default()

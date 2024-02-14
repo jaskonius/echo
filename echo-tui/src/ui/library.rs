@@ -8,7 +8,13 @@ pub fn render_library(app: &mut App, chunk: Rect, frame: &mut Frame) {
     let items = ["Tracks", "Albums", "Artists"].map(ListItem::new);
 
     let list = List::new(items)
-        .highlight_style(Style::default().add_modifier(Modifier::BOLD))
+        .highlight_style(
+            Style::default().add_modifier(Modifier::BOLD).fg(app
+                .config
+                .hover_color
+                .parse()
+                .expect("invalid color")),
+        )
         .highlight_symbol(">")
         .block(
             Block::default()

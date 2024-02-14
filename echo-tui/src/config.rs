@@ -1,22 +1,51 @@
+use anyhow::{anyhow, Context, Result};
+use ratatui::style::Color;
 use serde::{Deserialize, Serialize};
+use std::collections::HashSet;
+use std::str::FromStr;
 
-#[derive(Debug, Serialize, Deserialize, Copy, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Config {
     pub show_greeting: bool,
+    pub hover_color: String,
+    pub selected_color: String,
     pub key_bindings: KeyBindings,
+}
+
+impl Config {
+    /// Checks config values for validity.
+    ///
+    /// # Errors
+    /// Returns the error first occurred.
+    pub fn validate(&self) -> Result<()> {
+        Color::from_str(&self.hover_color).context("hover_color invalid")?;
+        Color::from_str(&self.selected_color).context("selected_color invalid")?;
+
+        let mut set_of_keys = HashSet::new();
+        if !set_of_keys.insert(self.key_bindings.quit) {
+            return Err(anyhow!("key for quit already assigned"));
+        };
+        if !set_of_keys.insert(self.key_bindings.toggle_queue) {
+            return Err(anyhow!("key for toggle_queue already used"));
+        };
+
+        Ok(())
+    }
 }
 
 impl Default for Config {
     fn default() -> Self {
         Self {
             show_greeting: true,
+            hover_color: "blue".to_string(),
+            selected_color: "yellow".to_string(),
             key_bindings: Default::default(),
         }
     }
 }
 
 /// Key bindings used to navigate the app. All are configurable freely. See each field for their defaults.
-#[derive(Debug, Serialize, Deserialize, Copy, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct KeyBindings {
     /// Default: 'q'
     pub quit: char,
