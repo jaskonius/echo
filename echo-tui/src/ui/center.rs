@@ -21,6 +21,15 @@ impl RowData {
         }
     }
 
+    fn from(track: &[String; 4]) -> Self {
+        Self::new(
+            track[0].clone(),
+            track[1].clone(),
+            track[2].clone(),
+            track[3].clone(),
+        )
+    }
+
     fn truncate(&mut self, max_len: u16) {
         let max_len = max_len as usize;
         let ellipsis_bytes: Vec<u8> = vec![0xE2, 0x80, 0xA6]; // U+2026 -> horizontal ellipsis
@@ -64,38 +73,10 @@ pub fn render_center(app: &mut App, chunk: Rect, frame: &mut Frame) {
 }
 
 fn render_queue(app: &mut App, chunk: Rect, frame: &mut Frame) {
-    let mut rows = vec![
-        RowData::new(
-            String::from("Heart of Courage"),
-            String::from("Two Steps from Hell"),
-            String::from("Invincible"),
-            String::from("3:12"),
-        ),
-        RowData::new(
-            String::from("Time"),
-            String::from("Hans Zimmer"),
-            String::from("Inception (Original Motion Picture Soundtrack)"),
-            String::from("4:35"),
-        ),
-        RowData::new(
-            String::from("Test Drive"),
-            String::from("John Powell"),
-            String::from("How to Train Your Dragon (Music from the Motion Picture)"),
-            String::from("3:15"),
-        ),
-        RowData::new(
-            String::from("Victory"),
-            String::from("Two Steps from Hell"),
-            String::from("Archangel"),
-            String::from("5:20"),
-        ),
-        RowData::new(
-            String::from("Forbidden Friendship"),
-            String::from("John Powell"),
-            String::from("How to Train Your Dragon (Music from the Motion Picture)"),
-            String::from("4:10"),
-        ),
-    ];
+    let mut rows = vec![];
+    for track in app.queue_items.iter() {
+        rows.push(RowData::from(track));
+    }
     rows.iter_mut()
         .for_each(|row| row.truncate(chunk.width / 4 - 3));
 

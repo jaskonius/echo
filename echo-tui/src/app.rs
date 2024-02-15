@@ -1,6 +1,7 @@
 use crate::config::Config;
 use crate::{APP_NAME, CONFIG_FILE};
 use anyhow::Result;
+use echo_localfiles::library::get_tracks;
 use ratatui::widgets::ListState;
 use tracing::debug;
 
@@ -52,6 +53,8 @@ pub struct App {
 
     pub playlist_items: Vec<String>,
     pub playlist_list_state: ListState,
+
+    pub queue_items: Vec<[String; 4]>,
 }
 
 impl App {
@@ -76,6 +79,8 @@ impl App {
                 String::from("Playlist 2"),
             ],
             playlist_list_state: ListState::default().with_selected(Some(0)),
+
+            queue_items: get_tracks(),
         })
     }
 

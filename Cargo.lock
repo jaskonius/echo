@@ -133,6 +133,7 @@ dependencies = [
  "anyhow",
  "confy",
  "crossterm",
+ "echo-localfiles",
  "ratatui",
  "serde",
  "tracing",
