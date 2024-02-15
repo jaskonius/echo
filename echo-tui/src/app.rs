@@ -77,6 +77,22 @@ impl App {
             HoveredSection::Playlist => {}
             HoveredSection::Main => self.hovered_section = HoveredSection::Library,
         }
+
+        match self.selected_section {
+            SelectedSection::None => {}
+            SelectedSection::Library => {
+                self.selected_section = SelectedSection::None;
+                self.hovered_section = HoveredSection::Library
+            }
+            SelectedSection::Playlist => {
+                self.selected_section = SelectedSection::None;
+                self.hovered_section = HoveredSection::Playlist
+            }
+            SelectedSection::Main => {
+                self.selected_section = SelectedSection::None;
+                self.hovered_section = HoveredSection::Main
+            }
+        }
     }
 
     pub fn down(&mut self) {
@@ -103,6 +119,22 @@ impl App {
             HoveredSection::Library => self.hovered_section = HoveredSection::Main,
             HoveredSection::Playlist => self.hovered_section = HoveredSection::Main,
             HoveredSection::Main => {}
+        }
+
+        match self.selected_section {
+            SelectedSection::None => {}
+            SelectedSection::Library => {
+                self.selected_section = SelectedSection::None;
+                self.hovered_section = HoveredSection::Library
+            }
+            SelectedSection::Playlist => {
+                self.selected_section = SelectedSection::None;
+                self.hovered_section = HoveredSection::Playlist
+            }
+            SelectedSection::Main => {
+                self.selected_section = SelectedSection::None;
+                self.hovered_section = HoveredSection::Main
+            }
         }
     }
 

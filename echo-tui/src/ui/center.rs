@@ -100,9 +100,11 @@ pub fn render_center(app: &mut App, chunk: Rect, frame: &mut Frame) {
     };
 
     let table_highlight_style = if app.hovered_section == HoveredSection::Main {
-        Style::default()
-            .fg(app.config.hover_color.parse().expect("invalid color"))
-            .add_modifier(Modifier::BOLD)
+        Style::default().add_modifier(Modifier::BOLD).fg(app
+            .config
+            .hover_color
+            .parse()
+            .expect("invalid color"))
     } else {
         Style::default().add_modifier(Modifier::BOLD)
     };

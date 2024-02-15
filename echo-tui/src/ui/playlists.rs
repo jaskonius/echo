@@ -16,9 +16,11 @@ pub fn render_playlists(app: &mut App, chunk: Rect, frame: &mut Frame) {
     };
 
     let list_highlight_style = if app.hovered_section == HoveredSection::Playlist {
-        Style::default()
-            .fg(app.config.hover_color.parse().expect("invalid color"))
-            .add_modifier(Modifier::BOLD)
+        Style::default().add_modifier(Modifier::BOLD).fg(app
+            .config
+            .hover_color
+            .parse()
+            .expect("invalid color"))
     } else {
         Style::default().add_modifier(Modifier::BOLD)
     };
