@@ -242,6 +242,25 @@ impl App {
                 self.selected_section = SelectedSection::Main
             }
         }
+
+        match self.selected_section {
+            SelectedSection::None => {}
+            SelectedSection::Library => {
+                if let Some(selected_list_item) = self.library_list_state.selected() {
+                    if selected_list_item == 0 {
+                        todo!()
+                    } else if selected_list_item == 1 {
+                        todo!()
+                    } else if selected_list_item == 2 {
+                        todo!()
+                    } else {
+                        unreachable!("only reachable if library got an additional section")
+                    }
+                };
+            }
+            SelectedSection::Playlist => {}
+            SelectedSection::Main => {}
+        }
     }
 
     pub fn quit(&mut self) {
