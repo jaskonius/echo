@@ -1,4 +1,4 @@
-use crate::app::{App, HoveredSection};
+use crate::app::{App, HoveredSection, SelectedSection};
 use ratatui::layout::Rect;
 use ratatui::prelude::{Modifier, Style};
 use ratatui::widgets::{Block, BorderType, Borders, List, ListItem};
@@ -9,6 +9,8 @@ pub fn render_playlists(app: &mut App, chunk: Rect, frame: &mut Frame) {
 
     let border_style = if app.hovered_section == HoveredSection::Playlist {
         Style::default().fg(app.config.hover_color.parse().expect("invalid color"))
+    } else if app.selected_section == SelectedSection::Playlist {
+        Style::default().fg(app.config.selected_color.parse().expect("invalid color"))
     } else {
         Style::default()
     };

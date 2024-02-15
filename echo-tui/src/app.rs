@@ -12,6 +12,7 @@ pub enum HoveredSection {
     Main,
 }
 
+#[derive(PartialEq)]
 pub enum SelectedSection {
     None,
     Library,
@@ -102,6 +103,24 @@ impl App {
             HoveredSection::Library => self.hovered_section = HoveredSection::Main,
             HoveredSection::Playlist => self.hovered_section = HoveredSection::Main,
             HoveredSection::Main => {}
+        }
+    }
+
+    pub fn select(&mut self) {
+        match self.hovered_section {
+            HoveredSection::None => {}
+            HoveredSection::Library => {
+                self.hovered_section = HoveredSection::None;
+                self.selected_section = SelectedSection::Library
+            }
+            HoveredSection::Playlist => {
+                self.hovered_section = HoveredSection::None;
+                self.selected_section = SelectedSection::Playlist
+            }
+            HoveredSection::Main => {
+                self.hovered_section = HoveredSection::None;
+                self.selected_section = SelectedSection::Main
+            }
         }
     }
 
