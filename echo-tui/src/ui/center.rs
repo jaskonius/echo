@@ -1,4 +1,4 @@
-use crate::app::App;
+use crate::app::{App, HoveredSection};
 use ratatui::layout::{Constraint, Rect};
 use ratatui::prelude::{Modifier, Style};
 use ratatui::widgets::{Block, BorderType, Borders, Cell, Row, Table, TableState};
@@ -91,10 +91,24 @@ pub fn render_center(app: &mut App, chunk: Rect, frame: &mut Frame) {
     rows.iter_mut()
         .for_each(|row| row.truncate(chunk.width / 4 - 3));
 
+    let border_style = if app.hovered_section == HoveredSection::Main {
+        Style::default().fg(app.config.hover_color.parse().expect("invalid color"))
+    } else {
+        Style::default()
+    };
+
+    let table_highlight_style = if app.hovered_section == HoveredSection::Main {
+        Style::default()
+            .fg(app.config.hover_color.parse().expect("invalid color"))
+            .add_modifier(Modifier::BOLD)
+    } else {
+        Style::default().add_modifier(Modifier::BOLD)
+    };
+
     let table = Table::new(rows.iter().map(|row| row.to_row()))
         .header(
             Row::new(["Title", "Artist", "Album", "Duration"])
-                .style(Style::default().add_modifier(Modifier::BOLD)),
+                .style(Style::default().add_modifier(Modifier::BOLD | Modifier::UNDERLINED)),
         )
         .widths(&[
             Constraint::Percentage(25),
@@ -102,7 +116,7 @@ pub fn render_center(app: &mut App, chunk: Rect, frame: &mut Frame) {
             Constraint::Percentage(25),
             Constraint::Length(8),
         ])
-        .highlight_style(Style::default().add_modifier(Modifier::BOLD))
+        .highlight_style(table_highlight_style)
         .highlight_symbol(">")
         .block(
             Block::default()
@@ -114,7 +128,8 @@ pub fn render_center(app: &mut App, chunk: Rect, frame: &mut Frame) {
                     }
                 })
                 .borders(Borders::ALL)
-                .border_type(BorderType::Rounded),
+                .border_type(BorderType::Rounded)
+                .border_style(border_style),
         );
 
     let mut table_state = TableState::default().with_selected(Some(3));

@@ -4,6 +4,7 @@ use anyhow::Result;
 use ratatui::widgets::ListState;
 use tracing::debug;
 
+#[derive(PartialEq)]
 pub enum HoveredSection {
     None,
     Library,
@@ -52,7 +53,7 @@ impl App {
             is_running: true,
             config,
             show_queue: false,
-            hovered_section: HoveredSection::None,
+            hovered_section: HoveredSection::Main,
             selected_section: SelectedSection::None,
             hovered_item: HoveredItem::None,
             library_list_state: ListState::default().with_selected(Some(0)),
@@ -69,19 +70,39 @@ impl App {
     }
 
     pub fn left(&mut self) {
-        todo!()
+        match self.hovered_section {
+            HoveredSection::None => {}
+            HoveredSection::Library => {}
+            HoveredSection::Playlist => {}
+            HoveredSection::Main => self.hovered_section = HoveredSection::Library,
+        }
     }
 
     pub fn down(&mut self) {
-        todo!()
+        match self.hovered_section {
+            HoveredSection::None => {}
+            HoveredSection::Library => self.hovered_section = HoveredSection::Playlist,
+            HoveredSection::Playlist => {}
+            HoveredSection::Main => {}
+        }
     }
 
     pub fn up(&mut self) {
-        todo!()
+        match self.hovered_section {
+            HoveredSection::None => {}
+            HoveredSection::Library => {}
+            HoveredSection::Playlist => self.hovered_section = HoveredSection::Library,
+            HoveredSection::Main => {}
+        }
     }
 
     pub fn right(&mut self) {
-        todo!()
+        match self.hovered_section {
+            HoveredSection::None => {}
+            HoveredSection::Library => self.hovered_section = HoveredSection::Main,
+            HoveredSection::Playlist => self.hovered_section = HoveredSection::Main,
+            HoveredSection::Main => {}
+        }
     }
 
     pub fn quit(&mut self) {
