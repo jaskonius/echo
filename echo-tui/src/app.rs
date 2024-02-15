@@ -43,7 +43,10 @@ pub struct App {
     pub selected_section: SelectedSection,
     pub hovered_item: HoveredItem,
 
+    // TODO: I know Vec<String> is not optimal...
+    pub library_items: Vec<String>,
     pub library_list_state: ListState,
+    pub playlist_items: Vec<String>,
     pub playlist_list_state: ListState,
 }
 
@@ -57,7 +60,13 @@ impl App {
             hovered_section: HoveredSection::Main,
             selected_section: SelectedSection::None,
             hovered_item: HoveredItem::None,
+            library_items: vec![
+                String::from("Tracks"),
+                String::from("Albums"),
+                String::from("Artists"),
+            ],
             library_list_state: ListState::default().with_selected(Some(0)),
+            playlist_items: vec![],
             playlist_list_state: ListState::default().with_selected(Some(0)),
         })
     }
@@ -102,6 +111,25 @@ impl App {
             HoveredSection::Playlist => {}
             HoveredSection::Main => {}
         }
+
+        match self.selected_section {
+            SelectedSection::None => {}
+            SelectedSection::Library => {
+                let next = match self.library_list_state.selected() {
+                    None => 0,
+                    Some(current) => {
+                        if current >= self.library_items.len() - 1 {
+                            0
+                        } else {
+                            current + 1
+                        }
+                    }
+                };
+                self.library_list_state.select(Some(next));
+            }
+            SelectedSection::Playlist => {}
+            SelectedSection::Main => {}
+        }
     }
 
     pub fn up(&mut self) {
@@ -110,6 +138,25 @@ impl App {
             HoveredSection::Library => {}
             HoveredSection::Playlist => self.hovered_section = HoveredSection::Library,
             HoveredSection::Main => {}
+        }
+
+        match self.selected_section {
+            SelectedSection::None => {}
+            SelectedSection::Library => {
+                let next = match self.library_list_state.selected() {
+                    None => 0,
+                    Some(current) => {
+                        if current == 0 {
+                            self.library_items.len() - 1
+                        } else {
+                            current - 1
+                        }
+                    }
+                };
+                self.library_list_state.select(Some(next));
+            }
+            SelectedSection::Playlist => {}
+            SelectedSection::Main => {}
         }
     }
 

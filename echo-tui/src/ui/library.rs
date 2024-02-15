@@ -5,7 +5,12 @@ use ratatui::widgets::{Block, BorderType, Borders, List, ListItem};
 use ratatui::Frame;
 
 pub fn render_library(app: &mut App, chunk: Rect, frame: &mut Frame) {
-    let items = ["Tracks", "Albums", "Artists"].map(ListItem::new);
+    let items: Vec<_> = app
+        .library_items
+        .clone()
+        .into_iter()
+        .map(ListItem::new)
+        .collect();
 
     let border_style = if app.hovered_section == HoveredSection::Library {
         Style::default().fg(app.config.hover_color.parse().expect("invalid color"))
