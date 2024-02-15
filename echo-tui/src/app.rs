@@ -46,6 +46,7 @@ pub struct App {
     // TODO: I know Vec<String> is not optimal...
     pub library_items: Vec<String>,
     pub library_list_state: ListState,
+
     pub playlist_items: Vec<String>,
     pub playlist_list_state: ListState,
 }
@@ -66,7 +67,11 @@ impl App {
                 String::from("Artists"),
             ],
             library_list_state: ListState::default().with_selected(Some(0)),
-            playlist_items: vec![],
+            playlist_items: vec![
+                String::from("Playlist 0"),
+                String::from("Playlist 1"),
+                String::from("Playlist 2"),
+            ],
             playlist_list_state: ListState::default().with_selected(Some(0)),
         })
     }
@@ -127,7 +132,19 @@ impl App {
                 };
                 self.library_list_state.select(Some(next));
             }
-            SelectedSection::Playlist => {}
+            SelectedSection::Playlist => {
+                let next = match self.playlist_list_state.selected() {
+                    None => 0,
+                    Some(current) => {
+                        if current >= self.playlist_items.len() - 1 {
+                            0
+                        } else {
+                            current + 1
+                        }
+                    }
+                };
+                self.playlist_list_state.select(Some(next));
+            }
             SelectedSection::Main => {}
         }
     }
@@ -155,7 +172,19 @@ impl App {
                 };
                 self.library_list_state.select(Some(next));
             }
-            SelectedSection::Playlist => {}
+            SelectedSection::Playlist => {
+                let next = match self.playlist_list_state.selected() {
+                    None => 0,
+                    Some(current) => {
+                        if current == 0 {
+                            self.playlist_items.len() - 1
+                        } else {
+                            current - 1
+                        }
+                    }
+                };
+                self.playlist_list_state.select(Some(next));
+            }
             SelectedSection::Main => {}
         }
     }
