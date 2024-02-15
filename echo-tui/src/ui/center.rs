@@ -1,7 +1,7 @@
-use crate::app::{App, HoveredSection, SelectedSection};
-use ratatui::layout::{Constraint, Rect};
-use ratatui::prelude::{Modifier, Style};
-use ratatui::widgets::{Block, BorderType, Borders, Cell, Row, Table, TableState};
+use crate::app::{ActiveMain, App, HoveredSection, SelectedSection};
+use ratatui::layout::{Alignment, Constraint, Rect};
+use ratatui::prelude::{Modifier, Style, Text};
+use ratatui::widgets::{Block, BorderType, Borders, Cell, Paragraph, Row, Table, TableState, Wrap};
 use ratatui::Frame;
 
 struct RowData {
@@ -56,6 +56,14 @@ impl RowData {
 }
 
 pub fn render_center(app: &mut App, chunk: Rect, frame: &mut Frame) {
+    if app.show_queue {
+        render_queue(app, chunk, frame)
+    } else {
+        render_active_main(app, chunk, frame)
+    }
+}
+
+fn render_queue(app: &mut App, chunk: Rect, frame: &mut Frame) {
     let mut rows = vec![
         RowData::new(
             String::from("Heart of Courage"),
@@ -139,4 +147,54 @@ pub fn render_center(app: &mut App, chunk: Rect, frame: &mut Frame) {
     let mut table_state = TableState::default().with_selected(Some(3));
 
     frame.render_stateful_widget(table, chunk, &mut table_state);
+}
+
+fn render_active_main(app: &mut App, chunk: Rect, frame: &mut Frame) {
+    match app.active_main {
+        ActiveMain::None => render_active_main_none(app, chunk, frame),
+        ActiveMain::Library => render_active_main_library(app, chunk, frame),
+        ActiveMain::Playlists => render_active_main_playlists(app, chunk, frame),
+    }
+}
+
+fn render_active_main_none(app: &mut App, chunk: Rect, frame: &mut Frame) {
+    let border_style = if app.hovered_section == HoveredSection::Main
+        || app.selected_section == SelectedSection::Main
+    {
+        Style::default().fg(app.config.hover_color.parse().expect("invalid color"))
+    } else {
+        Style::default()
+    };
+
+    frame.render_widget(
+        Paragraph::new(Text::raw(
+            r"_______   ______  __    __    ______
+|   ____| /      ||  |  |  |  /  __  \
+|  |__   |  ,----'|  |__|  | |  |  |  |
+|   __|  |  |     |   __   | |  |  |  |
+|  |____ |  `----.|  |  |  | |  `--'  |
+|_______| \______||__|  |__|  \______/
+
+Nothing selected yet.
+
+To navigate around, use j,k,l,h. To select something, press enter.",
+        ))
+        .block(
+            Block::default()
+                .borders(Borders::ALL)
+                .border_type(BorderType::Rounded)
+                .border_style(border_style),
+        )
+        .alignment(Alignment::Center)
+        .wrap(Wrap::default()),
+        chunk,
+    );
+}
+
+fn render_active_main_library(_app: &mut App, _chunk: Rect, _frame: &mut Frame) {
+    todo!()
+}
+
+fn render_active_main_playlists(_app: &mut App, _chunk: Rect, _frame: &mut Frame) {
+    todo!()
 }

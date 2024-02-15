@@ -20,11 +20,14 @@ pub enum SelectedSection {
     Main,
 }
 
-pub enum HoveredItem {
+/// What to show in main section.
+///
+/// Queue is treated as an overlay, so it can get toggled via `show_queue`.
+#[derive(PartialEq)]
+pub enum ActiveMain {
     None,
-    LibraryItem(usize),
-    PlaylistItem(usize),
-    MainItem(usize),
+    Library,
+    Playlists,
 }
 
 /// Keeps track of application state.
@@ -36,12 +39,12 @@ pub struct App {
     /// Configuration loaded from config file.
     pub config: Config,
 
-    /// Queue can be toggled, see [`Config::key_bindings`]
+    /// Whether to show queue.
     pub show_queue: bool,
+    pub active_main: ActiveMain,
 
     pub hovered_section: HoveredSection,
     pub selected_section: SelectedSection,
-    pub hovered_item: HoveredItem,
 
     // TODO: I know Vec<String> is not optimal...
     pub library_items: Vec<String>,
@@ -58,9 +61,9 @@ impl App {
             is_running: true,
             config,
             show_queue: false,
+            active_main: ActiveMain::None,
             hovered_section: HoveredSection::Main,
             selected_section: SelectedSection::None,
-            hovered_item: HoveredItem::None,
             library_items: vec![
                 String::from("Tracks"),
                 String::from("Albums"),
@@ -226,6 +229,10 @@ impl App {
                 self.selected_section = SelectedSection::Playlist
             }
             HoveredSection::Main => {
+                // shows info screen which cannot be selected
+                if !self.show_queue && self.active_main == ActiveMain::None {
+                    return;
+                }
                 self.hovered_section = HoveredSection::None;
                 self.selected_section = SelectedSection::Main
             }
