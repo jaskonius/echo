@@ -1,4 +1,5 @@
 use crate::app::{ActiveMain, App, HoveredSection, SelectedSection};
+use echo_localfiles::library;
 use ratatui::layout::{Alignment, Constraint, Rect};
 use ratatui::prelude::{Modifier, Style, Text};
 use ratatui::widgets::{Block, BorderType, Borders, Cell, Paragraph, Row, Table, TableState, Wrap};
@@ -30,7 +31,7 @@ impl RowData {
         )
     }
 
-    fn truncate(&mut self, max_len: u16) {
+    fn truncate(mut self, max_len: u16) -> Self {
         let max_len = max_len as usize;
         let ellipsis_bytes: Vec<u8> = vec![0xE2, 0x80, 0xA6]; // U+2026 -> horizontal ellipsis
         let ellipsis = std::str::from_utf8(&ellipsis_bytes).expect("could not decode ellipsis");
@@ -52,6 +53,8 @@ impl RowData {
             self.album = self.album.trim_end().to_string();
             self.album.push_str(ellipsis);
         }
+
+        self
     }
 
     fn to_row(&self) -> Row {
@@ -73,12 +76,12 @@ pub fn render_center(app: &mut App, chunk: Rect, frame: &mut Frame) {
 }
 
 fn render_queue(app: &mut App, chunk: Rect, frame: &mut Frame) {
-    let mut rows = vec![];
-    for track in app.queue_items.iter() {
-        rows.push(RowData::from(track));
-    }
-    rows.iter_mut()
-        .for_each(|row| row.truncate(chunk.width / 4 - 3));
+    let rows = app
+        .queue_items
+        .iter()
+        .map(RowData::from)
+        .map(|row| row.truncate(chunk.width / 4 - 3))
+        .collect();
 
     render_table("Queue", rows, app, chunk, frame);
 }
@@ -86,8 +89,8 @@ fn render_queue(app: &mut App, chunk: Rect, frame: &mut Frame) {
 fn render_active_main(app: &mut App, chunk: Rect, frame: &mut Frame) {
     match app.active_main {
         ActiveMain::None => render_active_main_none(app, chunk, frame),
-        ActiveMain::Library => render_active_main_library(app, chunk, frame),
-        ActiveMain::Playlists => render_active_main_playlists(app, chunk, frame),
+        ActiveMain::Library(idx) => render_active_main_library(idx, app, chunk, frame),
+        ActiveMain::Playlists(idx) => render_active_main_playlists(idx, app, chunk, frame),
     }
 }
 
@@ -125,11 +128,22 @@ To navigate around, use j,k,l,h. To select something, press enter.",
     );
 }
 
-fn render_active_main_library(_app: &mut App, _chunk: Rect, _frame: &mut Frame) {
-    todo!()
+fn render_active_main_library(idx: usize, app: &mut App, chunk: Rect, frame: &mut Frame) {
+    let rows: Vec<_> = library::get_tracks()
+        .iter()
+        .map(RowData::from)
+        .map(|row| row.truncate(chunk.width / 4 - 3))
+        .collect();
+
+    match idx {
+        0 => render_table("Tracks", rows, app, chunk, frame),
+        1 => render_table("Albums", rows, app, chunk, frame),
+        2 => render_table("Artists", rows, app, chunk, frame),
+        _ => unreachable!("3 or more only possible if library got an additional section"),
+    }
 }
 
-fn render_active_main_playlists(_app: &mut App, _chunk: Rect, _frame: &mut Frame) {
+fn render_active_main_playlists(_idx: usize, _app: &mut App, _chunk: Rect, _frame: &mut Frame) {
     todo!()
 }
 

@@ -26,8 +26,8 @@ pub enum SelectedSection {
 #[derive(PartialEq)]
 pub enum ActiveMain {
     None,
-    Library,
-    Playlists,
+    Library(usize),
+    Playlists(usize),
 }
 
 /// Keeps track of application state.
@@ -79,7 +79,12 @@ impl App {
             ],
             playlist_list_state: ListState::default().with_selected(Some(0)),
 
-            queue_items: Vec::new(),
+            queue_items: vec![[
+                "Last One Standing".to_string(),
+                "Two Steps from Hell".to_string(),
+                "Myth".to_string(),
+                "03:25".to_string(),
+            ]],
         })
     }
 
@@ -228,7 +233,7 @@ impl App {
             SelectedSection::Library => {
                 if let Some(selected_list_item) = self.library_list_state.selected() {
                     if selected_list_item == 0 {
-                        todo!()
+                        self.active_main = ActiveMain::Library(0);
                     } else if selected_list_item == 1 {
                         todo!()
                     } else if selected_list_item == 2 {
