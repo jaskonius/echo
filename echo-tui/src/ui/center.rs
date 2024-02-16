@@ -80,54 +80,7 @@ fn render_queue(app: &mut App, chunk: Rect, frame: &mut Frame) {
     rows.iter_mut()
         .for_each(|row| row.truncate(chunk.width / 4 - 3));
 
-    let border_style = if app.hovered_section == HoveredSection::Main {
-        Style::default().fg(app.config.hover_color.parse().expect("invalid color"))
-    } else if app.selected_section == SelectedSection::Main {
-        Style::default().fg(app.config.selected_color.parse().expect("invalid color"))
-    } else {
-        Style::default()
-    };
-
-    let table_highlight_style = if app.hovered_section == HoveredSection::Main {
-        Style::default().add_modifier(Modifier::BOLD).fg(app
-            .config
-            .hover_color
-            .parse()
-            .expect("invalid color"))
-    } else {
-        Style::default().add_modifier(Modifier::BOLD)
-    };
-
-    let table = Table::new(rows.iter().map(|row| row.to_row()))
-        .header(
-            Row::new(["Title", "Artist", "Album", "Duration"])
-                .style(Style::default().add_modifier(Modifier::BOLD | Modifier::UNDERLINED)),
-        )
-        .widths(&[
-            Constraint::Percentage(25),
-            Constraint::Percentage(25),
-            Constraint::Percentage(25),
-            Constraint::Length(8),
-        ])
-        .highlight_style(table_highlight_style)
-        .highlight_symbol(">")
-        .block(
-            Block::default()
-                .title({
-                    if app.show_queue {
-                        "Play Queue"
-                    } else {
-                        "Not Play Queue"
-                    }
-                })
-                .borders(Borders::ALL)
-                .border_type(BorderType::Rounded)
-                .border_style(border_style),
-        );
-
-    let mut table_state = TableState::default().with_selected(Some(3));
-
-    frame.render_stateful_widget(table, chunk, &mut table_state);
+    render_table("Queue", rows, app, chunk, frame);
 }
 
 fn render_active_main(app: &mut App, chunk: Rect, frame: &mut Frame) {
@@ -178,4 +131,49 @@ fn render_active_main_library(_app: &mut App, _chunk: Rect, _frame: &mut Frame) 
 
 fn render_active_main_playlists(_app: &mut App, _chunk: Rect, _frame: &mut Frame) {
     todo!()
+}
+
+fn render_table(title: &str, rows: Vec<RowData>, app: &mut App, chunk: Rect, frame: &mut Frame) {
+    let border_style = if app.hovered_section == HoveredSection::Main {
+        Style::default().fg(app.config.hover_color.parse().expect("invalid color"))
+    } else if app.selected_section == SelectedSection::Main {
+        Style::default().fg(app.config.selected_color.parse().expect("invalid color"))
+    } else {
+        Style::default()
+    };
+
+    let table_highlight_style = if app.hovered_section == HoveredSection::Main {
+        Style::default().add_modifier(Modifier::BOLD).fg(app
+            .config
+            .hover_color
+            .parse()
+            .expect("invalid color"))
+    } else {
+        Style::default().add_modifier(Modifier::BOLD)
+    };
+
+    let table = Table::new(rows.iter().map(|row| row.to_row()))
+        .header(
+            Row::new(["Title", "Artist", "Album", "Duration"])
+                .style(Style::default().add_modifier(Modifier::BOLD | Modifier::UNDERLINED)),
+        )
+        .widths(&[
+            Constraint::Percentage(25),
+            Constraint::Percentage(25),
+            Constraint::Percentage(25),
+            Constraint::Length(8),
+        ])
+        .highlight_style(table_highlight_style)
+        .highlight_symbol(">")
+        .block(
+            Block::default()
+                .title(title)
+                .borders(Borders::ALL)
+                .border_type(BorderType::Rounded)
+                .border_style(border_style),
+        );
+
+    let mut table_state = TableState::default().with_selected(Some(3));
+
+    frame.render_stateful_widget(table, chunk, &mut table_state);
 }
