@@ -1,3 +1,6 @@
+/// Returns all tracks in the library.
+///
+/// Format: [title, artist, album, duration]
 pub fn get_tracks() -> Vec<[String; 4]> {
     vec![
         [
@@ -31,4 +34,28 @@ pub fn get_tracks() -> Vec<[String; 4]> {
             String::from("4:25"),
         ],
     ]
+}
+
+/// Returns all albums in the library.
+///
+/// Format: [Artist, Album, Year, Duration]
+pub fn get_albums() -> Vec<[String; 4]> {
+    vec![
+        [
+            String::from("Two Steps from Hell"),
+            String::from("Dragon"),
+            String::from("2019"),
+            String::from("01:21:48"),
+        ],
+        [
+            String::from("Two Steps from Hell"),
+            String::from("Myth"),
+            String::from("2022"),
+            String::from("01:26:58"),
+        ],
+    ]
+}
+
+pub fn get_artists() -> Vec<String> {
+    todo!()
 }
