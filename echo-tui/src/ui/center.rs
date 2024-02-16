@@ -83,7 +83,14 @@ fn render_queue(app: &mut App, chunk: Rect, frame: &mut Frame) {
         .map(|row| row.truncate(chunk.width / 4 - 3))
         .collect();
 
-    render_table("Queue", rows, app, chunk, frame);
+    render_table(
+        "Queue",
+        ["Title", "Artist", "Album", "Duration"].to_vec(),
+        rows,
+        app,
+        chunk,
+        frame,
+    );
 }
 
 fn render_active_main(app: &mut App, chunk: Rect, frame: &mut Frame) {
@@ -129,16 +136,41 @@ To navigate around, use j,k,l,h. To select something, press enter.",
 }
 
 fn render_active_main_library(idx: usize, app: &mut App, chunk: Rect, frame: &mut Frame) {
-    let rows: Vec<_> = library::get_tracks()
-        .iter()
-        .map(RowData::from)
-        .map(|row| row.truncate(chunk.width / 4 - 3))
-        .collect();
-
     match idx {
-        0 => render_table("Tracks", rows, app, chunk, frame),
-        1 => render_table("Albums", rows, app, chunk, frame),
-        2 => render_table("Artists", rows, app, chunk, frame),
+        0 => {
+            let rows: Vec<_> = library::get_tracks()
+                .iter()
+                .map(RowData::from)
+                .map(|row| row.truncate(chunk.width / 4 - 3))
+                .collect();
+            render_table(
+                "Tracks",
+                ["Title", "Artist", "Album", "Duration"].to_vec(),
+                rows,
+                app,
+                chunk,
+                frame,
+            )
+        }
+        1 => {
+            let rows: Vec<_> = library::get_albums()
+                .iter()
+                .map(RowData::from)
+                .map(|row| row.truncate(chunk.width / 4 - 3))
+                .collect();
+            render_table(
+                "Albums",
+                ["Artist", "Album", "Year", "Duration"].to_vec(),
+                rows,
+                app,
+                chunk,
+                frame,
+            )
+        }
+        2 => {
+            let rows = vec![];
+            render_table("Artists", ["Name"].to_vec(), rows, app, chunk, frame)
+        }
         _ => unreachable!("3 or more only possible if library got an additional section"),
     }
 }
@@ -147,7 +179,14 @@ fn render_active_main_playlists(_idx: usize, _app: &mut App, _chunk: Rect, _fram
     todo!()
 }
 
-fn render_table(title: &str, rows: Vec<RowData>, app: &mut App, chunk: Rect, frame: &mut Frame) {
+fn render_table(
+    title: &str,
+    header: Vec<&str>,
+    rows: Vec<RowData>,
+    app: &mut App,
+    chunk: Rect,
+    frame: &mut Frame,
+) {
     let border_style = if app.hovered_section == HoveredSection::Main {
         Style::default().fg(app.config.hover_color.parse().expect("invalid color"))
     } else if app.selected_section == SelectedSection::Main {
@@ -168,7 +207,7 @@ fn render_table(title: &str, rows: Vec<RowData>, app: &mut App, chunk: Rect, fra
 
     let table = Table::new(rows.iter().map(|row| row.to_row()))
         .header(
-            Row::new(["Title", "Artist", "Album", "Duration"])
+            Row::new(header)
                 .style(Style::default().add_modifier(Modifier::BOLD | Modifier::UNDERLINED)),
         )
         .widths(&[

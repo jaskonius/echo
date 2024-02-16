@@ -232,15 +232,7 @@ impl App {
             SelectedSection::None => {}
             SelectedSection::Library => {
                 if let Some(selected_list_item) = self.library_list_state.selected() {
-                    if selected_list_item == 0 {
-                        self.active_main = ActiveMain::Library(0);
-                    } else if selected_list_item == 1 {
-                        todo!()
-                    } else if selected_list_item == 2 {
-                        todo!()
-                    } else {
-                        unreachable!("only reachable if library got an additional section")
-                    }
+                    self.active_main = ActiveMain::Library(selected_list_item);
                 };
             }
             SelectedSection::Playlist => {}
