@@ -223,26 +223,7 @@ impl App {
     }
 
     pub fn select(&mut self) {
-        match self.hovered_section {
-            HoveredSection::None => {}
-            HoveredSection::Library => {
-                self.hovered_section = HoveredSection::None;
-                self.selected_section = SelectedSection::Library
-            }
-            HoveredSection::Playlist => {
-                self.hovered_section = HoveredSection::None;
-                self.selected_section = SelectedSection::Playlist
-            }
-            HoveredSection::Main => {
-                // shows info screen which cannot be selected
-                if !self.show_queue && self.active_main == ActiveMain::None {
-                    return;
-                }
-                self.hovered_section = HoveredSection::None;
-                self.selected_section = SelectedSection::Main
-            }
-        }
-
+        // needs to be dealt with first so that both matches don't influence each other
         match self.selected_section {
             SelectedSection::None => {}
             SelectedSection::Library => {
@@ -260,6 +241,26 @@ impl App {
             }
             SelectedSection::Playlist => {}
             SelectedSection::Main => {}
+        }
+
+        match self.hovered_section {
+            HoveredSection::None => {}
+            HoveredSection::Library => {
+                self.hovered_section = HoveredSection::None;
+                self.selected_section = SelectedSection::Library;
+            }
+            HoveredSection::Playlist => {
+                self.hovered_section = HoveredSection::None;
+                self.selected_section = SelectedSection::Playlist;
+            }
+            HoveredSection::Main => {
+                // shows info screen which cannot be selected
+                if !self.show_queue && self.active_main == ActiveMain::None {
+                    return;
+                }
+                self.hovered_section = HoveredSection::None;
+                self.selected_section = SelectedSection::Main;
+            }
         }
     }
 
