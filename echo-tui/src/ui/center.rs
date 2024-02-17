@@ -2,7 +2,7 @@ use crate::app::{ActiveMain, App, HoveredSection, SelectedSection};
 use echo_localfiles::library;
 use ratatui::layout::{Alignment, Constraint, Rect};
 use ratatui::prelude::{Modifier, Style, Text};
-use ratatui::widgets::{Block, BorderType, Borders, Cell, Paragraph, Row, Table, TableState, Wrap};
+use ratatui::widgets::{Block, BorderType, Borders, Cell, Paragraph, Row, Table, Wrap};
 use ratatui::Frame;
 
 struct RowData {
@@ -226,7 +226,5 @@ fn render_table(
                 .border_style(border_style),
         );
 
-    let mut table_state = TableState::default().with_selected(Some(3));
-
-    frame.render_stateful_widget(table, chunk, &mut table_state);
+    frame.render_stateful_widget(table, chunk, &mut app.table_state);
 }

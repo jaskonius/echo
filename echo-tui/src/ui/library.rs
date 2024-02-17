@@ -6,7 +6,7 @@ use ratatui::Frame;
 
 pub fn render_library(app: &mut App, chunk: Rect, frame: &mut Frame) {
     let items: Vec<_> = app
-        .library_items
+        .library_list_items
         .clone()
         .into_iter()
         .map(ListItem::new)

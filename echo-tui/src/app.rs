@@ -1,7 +1,7 @@
 use crate::config::Config;
 use crate::{APP_NAME, CONFIG_FILE};
 use anyhow::Result;
-use ratatui::widgets::ListState;
+use ratatui::widgets::{ListState, TableState};
 use tracing::debug;
 
 #[derive(PartialEq)]
@@ -47,11 +47,14 @@ pub struct App {
     pub selected_section: SelectedSection,
 
     // TODO: I know Vec<String> is not optimal...
-    pub library_items: Vec<String>,
+    pub library_list_items: Vec<String>,
     pub library_list_state: ListState,
 
-    pub playlist_items: Vec<String>,
+    pub playlist_list_items: Vec<String>,
     pub playlist_list_state: ListState,
+
+    pub table_items: Vec<[String; 4]>,
+    pub table_state: TableState,
 
     pub queue_items: Vec<[String; 4]>,
 }
@@ -66,19 +69,21 @@ impl App {
             active_main: ActiveMain::None,
             hovered_section: HoveredSection::Main,
             selected_section: SelectedSection::None,
-            library_items: vec![
+            library_list_items: vec![
                 String::from("Tracks"),
                 String::from("Albums"),
                 String::from("Artists"),
             ],
             library_list_state: ListState::default().with_selected(Some(0)),
-            playlist_items: vec![
+            playlist_list_items: vec![
                 String::from("Playlist 0"),
                 String::from("Playlist 1"),
                 String::from("Playlist 2"),
             ],
             playlist_list_state: ListState::default().with_selected(Some(0)),
 
+            table_items: vec![],
+            table_state: TableState::default().with_selected(Some(0)),
             queue_items: vec![[
                 "Last One Standing".to_string(),
                 "Two Steps from Hell".to_string(),
@@ -135,7 +140,7 @@ impl App {
                 let next = match self.library_list_state.selected() {
                     None => 0,
                     Some(current) => {
-                        if current >= self.library_items.len() - 1 {
+                        if current >= self.library_list_items.len() - 1 {
                             0
                         } else {
                             current + 1
@@ -148,7 +153,7 @@ impl App {
                 let next = match self.playlist_list_state.selected() {
                     None => 0,
                     Some(current) => {
-                        if current >= self.playlist_items.len() - 1 {
+                        if current >= self.playlist_list_items.len() - 1 {
                             0
                         } else {
                             current + 1
@@ -176,7 +181,7 @@ impl App {
                     None => 0,
                     Some(current) => {
                         if current == 0 {
-                            self.library_items.len() - 1
+                            self.library_list_items.len() - 1
                         } else {
                             current - 1
                         }
@@ -189,7 +194,7 @@ impl App {
                     None => 0,
                     Some(current) => {
                         if current == 0 {
-                            self.playlist_items.len() - 1
+                            self.playlist_list_items.len() - 1
                         } else {
                             current - 1
                         }
