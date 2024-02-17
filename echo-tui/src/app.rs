@@ -233,6 +233,7 @@ impl App {
             SelectedSection::Library => {
                 if let Some(selected_list_item) = self.library_list_state.selected() {
                     self.active_main = ActiveMain::Library(selected_list_item);
+                    self.selected_section = SelectedSection::Main;
                 };
             }
             SelectedSection::Playlist => {}
