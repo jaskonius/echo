@@ -1,8 +1,12 @@
+use crate::app::stateful_list::StatefulList;
 use crate::config::Config;
 use crate::{APP_NAME, CONFIG_FILE};
 use anyhow::Result;
-use ratatui::widgets::{ListState, TableState};
+use ratatui::widgets::TableState;
 use tracing::debug;
+
+mod stateful_list;
+mod stateful_table;
 
 #[derive(PartialEq)]
 pub enum HoveredSection {
@@ -31,7 +35,7 @@ pub enum ActiveMain {
 }
 
 /// Keeps track of application state.
-pub struct App {
+pub struct App<'a> {
     /// Whether app is running. App will quit when set to false. Should **not** be set manually,
     /// use [`app.quit()`](Self::quit) instead.
     pub is_running: bool,
@@ -46,12 +50,8 @@ pub struct App {
     pub hovered_section: HoveredSection,
     pub selected_section: SelectedSection,
 
-    // TODO: I know Vec<String> is not optimal...
-    pub library_list_items: Vec<String>,
-    pub library_list_state: ListState,
-
-    pub playlist_list_items: Vec<String>,
-    pub playlist_list_state: ListState,
+    pub library_list: StatefulList<'a>,
+    pub playlist_list: StatefulList<'a>,
 
     pub table_items: Vec<[String; 4]>,
     pub table_state: TableState,
@@ -59,7 +59,7 @@ pub struct App {
     pub queue_items: Vec<[String; 4]>,
 }
 
-impl App {
+impl<'a> App<'a> {
     pub fn from(config: Config) -> Result<Self> {
         config.validate()?;
         Ok(Self {
@@ -69,19 +69,15 @@ impl App {
             active_main: ActiveMain::None,
             hovered_section: HoveredSection::Main,
             selected_section: SelectedSection::None,
-            library_list_items: vec![
-                String::from("Tracks"),
-                String::from("Albums"),
-                String::from("Artists"),
-            ],
-            library_list_state: ListState::default().with_selected(Some(0)),
-            playlist_list_items: vec![
-                String::from("Playlist 0"),
-                String::from("Playlist 1"),
-                String::from("Playlist 2"),
-            ],
-            playlist_list_state: ListState::default().with_selected(Some(0)),
-
+            library_list: StatefulList::new(vec![
+                "Tracks".to_string(),
+                "Albums".to_string(),
+                "Artists".to_string(),
+            ]),
+            playlist_list: StatefulList::new(vec![
+                "Playlist 0".to_string(),
+                "Playlist 1".to_string(),
+            ]),
             table_items: vec![],
             table_state: TableState::default().with_selected(Some(0)),
             queue_items: vec![[
@@ -137,30 +133,10 @@ impl App {
         match self.selected_section {
             SelectedSection::None => {}
             SelectedSection::Library => {
-                let next = match self.library_list_state.selected() {
-                    None => 0,
-                    Some(current) => {
-                        if current >= self.library_list_items.len() - 1 {
-                            0
-                        } else {
-                            current + 1
-                        }
-                    }
-                };
-                self.library_list_state.select(Some(next));
+                self.library_list.next();
             }
             SelectedSection::Playlist => {
-                let next = match self.playlist_list_state.selected() {
-                    None => 0,
-                    Some(current) => {
-                        if current >= self.playlist_list_items.len() - 1 {
-                            0
-                        } else {
-                            current + 1
-                        }
-                    }
-                };
-                self.playlist_list_state.select(Some(next));
+                self.playlist_list.next();
             }
             SelectedSection::Main => {}
         }
@@ -177,30 +153,10 @@ impl App {
         match self.selected_section {
             SelectedSection::None => {}
             SelectedSection::Library => {
-                let next = match self.library_list_state.selected() {
-                    None => 0,
-                    Some(current) => {
-                        if current == 0 {
-                            self.library_list_items.len() - 1
-                        } else {
-                            current - 1
-                        }
-                    }
-                };
-                self.library_list_state.select(Some(next));
+                self.library_list.prev();
             }
             SelectedSection::Playlist => {
-                let next = match self.playlist_list_state.selected() {
-                    None => 0,
-                    Some(current) => {
-                        if current == 0 {
-                            self.playlist_list_items.len() - 1
-                        } else {
-                            current - 1
-                        }
-                    }
-                };
-                self.playlist_list_state.select(Some(next));
+                self.playlist_list.prev();
             }
             SelectedSection::Main => {}
         }
@@ -236,7 +192,7 @@ impl App {
         match self.selected_section {
             SelectedSection::None => {}
             SelectedSection::Library => {
-                if let Some(selected_list_item) = self.library_list_state.selected() {
+                if let Some(selected_list_item) = self.library_list.state.selected() {
                     self.active_main = ActiveMain::Library(selected_list_item);
                     self.selected_section = SelectedSection::Main;
                 };
