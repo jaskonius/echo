@@ -1,4 +1,5 @@
 use crate::app::{App, HoveredSection, SelectedSection};
+use echo_localfiles::playlists::get_playlists;
 use ratatui::layout::Rect;
 use ratatui::prelude::{Modifier, Style};
 use ratatui::widgets::{Block, BorderType, Borders, List};
@@ -23,6 +24,7 @@ pub fn render_playlists(app: &mut App, chunk: Rect, frame: &mut Frame) {
         Style::default().add_modifier(Modifier::BOLD)
     };
 
+    app.playlist_list.update(get_playlists());
     let list = List::new(app.playlist_list.items.clone())
         .highlight_style(list_highlight_style)
         .highlight_symbol(">")

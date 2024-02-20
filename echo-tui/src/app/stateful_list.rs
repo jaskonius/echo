@@ -13,6 +13,12 @@ impl<'a> StatefulList<'a> {
         }
     }
 
+    /// Updates current list of items. Has to be called before a new instance of `List` is created
+    /// to keep the app state in sync with that list.
+    pub fn update(&mut self, items: Vec<String>) {
+        self.items = items.into_iter().map(ListItem::new).collect();
+    }
+
     pub fn prev(&mut self) {
         let next = match self.state.selected() {
             None => 0,

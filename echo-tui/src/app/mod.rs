@@ -74,10 +74,7 @@ impl<'a> App<'a> {
                 "Albums".to_string(),
                 "Artists".to_string(),
             ]),
-            playlist_list: StatefulList::new(vec![
-                "Playlist 0".to_string(),
-                "Playlist 1".to_string(),
-            ]),
+            playlist_list: StatefulList::new(vec![]),
             table_items: vec![],
             table_state: TableState::default().with_selected(Some(0)),
             queue_items: vec![[
