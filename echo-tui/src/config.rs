@@ -22,6 +22,7 @@ impl Config {
     pub fn validate(&self) -> Result<()> {
         Color::from_str(&self.hover_color).context("hover_color invalid")?;
         Color::from_str(&self.selected_color).context("selected_color invalid")?;
+        Color::from_str(&self.progress_color).context("progress_color invalid")?;
 
         let mut set_of_keys = HashSet::new();
         if !set_of_keys.insert(self.key_bindings.quit) {
