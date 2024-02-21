@@ -10,6 +10,7 @@ pub struct Config {
     pub show_greeting: bool,
     pub hover_color: String,
     pub selected_color: String,
+    pub progress_color: String,
     pub key_bindings: KeyBindings,
 }
 
@@ -40,6 +41,7 @@ impl Default for Config {
             show_greeting: true,
             hover_color: "blue".to_string(),
             selected_color: "yellow".to_string(),
+            progress_color: "blue".to_string(),
             key_bindings: Default::default(),
         }
     }

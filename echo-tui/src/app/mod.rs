@@ -251,6 +251,7 @@ impl<'a> App<'a> {
             show_greeting: false,
             key_bindings: self.config.key_bindings.clone(),
             hover_color: self.config.hover_color.clone(),
+            progress_color: self.config.progress_color.clone(),
             selected_color: self.config.selected_color.clone(),
         };
         confy::store(APP_NAME, CONFIG_FILE, config).expect("Failed to store config");
