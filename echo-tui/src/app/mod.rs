@@ -1,12 +1,12 @@
 use crate::app::stateful_list::StatefulList;
+use crate::app::stateful_table::StatefulTable;
 use crate::config::Config;
 use crate::{APP_NAME, CONFIG_FILE};
 use anyhow::Result;
-use ratatui::widgets::TableState;
 use tracing::debug;
 
 mod stateful_list;
-mod stateful_table;
+pub mod stateful_table;
 
 #[derive(PartialEq)]
 pub enum HoveredSection {
@@ -53,10 +53,9 @@ pub struct App<'a> {
     pub library_list: StatefulList<'a>,
     pub playlist_list: StatefulList<'a>,
 
-    pub table_items: Vec<[String; 4]>,
-    pub table_state: TableState,
+    pub center_table: StatefulTable,
 
-    pub queue_items: Vec<[String; 4]>,
+    pub queue_table: StatefulTable,
 }
 
 impl<'a> App<'a> {
@@ -75,14 +74,27 @@ impl<'a> App<'a> {
                 "Artists".to_string(),
             ]),
             playlist_list: StatefulList::new(vec![]),
-            table_items: vec![],
-            table_state: TableState::default().with_selected(Some(0)),
-            queue_items: vec![[
-                "Last One Standing".to_string(),
-                "Two Steps from Hell".to_string(),
-                "Myth".to_string(),
-                "03:25".to_string(),
-            ]],
+            center_table: StatefulTable::new(vec![vec![]]),
+            queue_table: StatefulTable::new(vec![
+                vec![
+                    "Last One Standing".to_string(),
+                    "Two Steps from Hell".to_string(),
+                    "Myth".to_string(),
+                    "03:25".to_string(),
+                ],
+                vec![
+                    "Insomnia".to_string(),
+                    "2WEI".to_string(),
+                    "Sequels".to_string(),
+                    "03:26".to_string(),
+                ],
+                vec![
+                    "Dark Matter".to_string(),
+                    "Les Friction".to_string(),
+                    "Dark Matter".to_string(),
+                    "04:20".to_string(),
+                ],
+            ]),
         })
     }
 
@@ -135,7 +147,13 @@ impl<'a> App<'a> {
             SelectedSection::Playlist => {
                 self.playlist_list.next();
             }
-            SelectedSection::Main => {}
+            SelectedSection::Main => {
+                if self.show_queue {
+                    self.queue_table.next();
+                } else {
+                    self.center_table.next();
+                }
+            }
         }
     }
 
@@ -155,7 +173,13 @@ impl<'a> App<'a> {
             SelectedSection::Playlist => {
                 self.playlist_list.prev();
             }
-            SelectedSection::Main => {}
+            SelectedSection::Main => {
+                if self.show_queue {
+                    self.queue_table.prev();
+                } else {
+                    self.center_table.prev();
+                }
+            }
         }
     }
 
@@ -192,6 +216,7 @@ impl<'a> App<'a> {
                 if let Some(selected_list_item) = self.library_list.state.selected() {
                     self.active_main = ActiveMain::Library(selected_list_item);
                     self.selected_section = SelectedSection::Main;
+                    self.center_table.state.select(Some(0)); // reset table state
                 };
             }
             SelectedSection::Playlist => {}
