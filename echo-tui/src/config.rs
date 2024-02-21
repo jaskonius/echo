@@ -30,6 +30,18 @@ impl Config {
         if !set_of_keys.insert(self.key_bindings.toggle_queue) {
             return Err(anyhow!("key for toggle_queue already used"));
         };
+        if !set_of_keys.insert(self.key_bindings.left) {
+            return Err(anyhow!("key for left already used"));
+        };
+        if !set_of_keys.insert(self.key_bindings.down) {
+            return Err(anyhow!("key for down already used"));
+        };
+        if !set_of_keys.insert(self.key_bindings.up) {
+            return Err(anyhow!("key for up already used"));
+        };
+        if !set_of_keys.insert(self.key_bindings.right) {
+            return Err(anyhow!("key for right already used"));
+        };
 
         Ok(())
     }
