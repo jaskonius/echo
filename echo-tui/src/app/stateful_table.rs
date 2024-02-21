@@ -51,10 +51,14 @@ impl StatefulTable {
     }
 
     pub fn truncate(mut self, max_len: u16) -> Self {
-        self.items.iter_mut().for_each(|i| {
-            <RowData as Clone>::clone(i).truncate(max_len); // idfk what happens but rustc told me to do it o.O
-        });
+        // there must be a better way...
+        let mut new_items = vec![];
+        for row in self.items.iter() {
+            let row = row.clone();
+            new_items.push(row.truncate(max_len));
+        }
 
+        self.items = new_items;
         self
     }
 
