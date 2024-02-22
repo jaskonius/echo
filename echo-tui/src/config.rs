@@ -6,7 +6,7 @@ use std::str::FromStr;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Config {
-    /// Show greeting on start. Set to false by [`handler`](crate::handler::handle_key_events) after an event has occured.
+    /// Show greeting on start. Set to false by [`handler`](crate::handler::handle_key_events) after an event has occurred.
     pub show_greeting: bool,
     pub hover_color: String,
     pub selected_color: String,
