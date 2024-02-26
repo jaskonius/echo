@@ -1,5 +1,6 @@
 use ratatui::widgets::{Cell, Row, TableState};
 
+/// Holds items of a single row.
 #[derive(Clone)]
 pub struct RowData {
     items: Vec<String>,
