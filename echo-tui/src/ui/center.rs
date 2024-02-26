@@ -71,7 +71,7 @@ To navigate around, use j,k,l,h. To select something, press enter.",
 fn render_active_main_library(idx: usize, app: &mut App, chunk: Rect, frame: &mut Frame) {
     match idx {
         0 => {
-            let tracks = library::get_tracks();
+            let tracks = library::tracks::get_tracks();
             app.center_table.items = tracks.iter().map(|t| RowData::new(t.clone())).collect();
 
             let rows = app.center_table.clone().truncate(chunk.width / 4 - 3).items;
@@ -85,7 +85,7 @@ fn render_active_main_library(idx: usize, app: &mut App, chunk: Rect, frame: &mu
             )
         }
         1 => {
-            let tracks = library::get_albums();
+            let tracks = library::albums::get_albums();
             app.center_table.items = tracks.iter().map(|t| RowData::new(t.clone())).collect();
 
             let rows = app.center_table.clone().truncate(chunk.width / 4 - 3).items;
