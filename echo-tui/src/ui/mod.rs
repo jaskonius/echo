@@ -90,11 +90,10 @@ fn render_root_dir_input(app: &mut App, frame: &mut Frame) {
     let chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([
-            Constraint::Min(2),
             Constraint::Length(3),
-            Constraint::Min(0),
+            Constraint::Min(0)
         ])
-        .horizontal_margin(2)
+        .margin(2)
         .split(frame.size());
 
     app.root_dir_input_active = true;
@@ -110,5 +109,5 @@ fn render_root_dir_input(app: &mut App, frame: &mut Frame) {
             .border_type(BorderType::Rounded),
     );
 
-    frame.render_widget(searchbar, chunks[1]);
+    frame.render_widget(searchbar, chunks[0]);
 }
