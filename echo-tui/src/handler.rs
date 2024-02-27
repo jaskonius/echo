@@ -1,9 +1,35 @@
 use crate::app::App;
 use anyhow::Result;
 use crossterm::event::{KeyCode, KeyEvent};
+use std::path::PathBuf;
+use tracing::info;
 use KeyCode::Char;
 
 pub fn handle_key_events(key_event: KeyEvent, app: &mut App) -> Result<()> {
+    if app.root_dir_input_active {
+        match key_event.code {
+            Char(key) => {
+                app.root_dir_input_buffer.push(key);
+            }
+            KeyCode::Backspace => {
+                app.root_dir_input_buffer.pop();
+            }
+            KeyCode::Enter => {
+                let path = PathBuf::from(app.root_dir_input_buffer.clone());
+                if !path.exists() {
+                    todo!("handle wrong input");
+                }
+                app.root_dir_input_active = false;
+                app.root_dir = path.clone();
+                info!("set {:?} as root_dir", path);
+            }
+            KeyCode::Esc => app.quit(),
+            _ => {}
+        }
+
+        return Ok(());
+    }
+
     match key_event.code {
         KeyCode::Backspace => {}
         KeyCode::Enter => app.select(),

@@ -8,6 +8,8 @@ use std::str::FromStr;
 pub struct Config {
     /// Show greeting on start. Set to false by [`handler`](crate::handler::handle_key_events) after an event has occurred.
     pub show_greeting: bool,
+    /// Root directory of music.
+    pub root_dir: String,
     pub hover_color: String,
     pub selected_color: String,
     pub progress_color: String,
@@ -52,6 +54,7 @@ impl Default for Config {
     fn default() -> Self {
         Self {
             show_greeting: true,
+            root_dir: "".to_string(),
             hover_color: "blue".to_string(),
             selected_color: "yellow".to_string(),
             progress_color: "blue".to_string(),

@@ -3,6 +3,7 @@ use crate::app::stateful_table::StatefulTable;
 use crate::config::Config;
 use crate::{APP_NAME, CONFIG_FILE};
 use anyhow::Result;
+use std::path::PathBuf;
 use tracing::debug;
 
 mod stateful_list;
@@ -43,6 +44,13 @@ pub struct App<'a> {
     /// Configuration loaded from config file.
     pub config: Config,
 
+    /// Buffer for text input of `root_dir` path.
+    pub root_dir_input_buffer: String,
+    /// Whether the user is currently typing.
+    pub root_dir_input_active: bool,
+    /// Root directory of music.
+    pub root_dir: PathBuf,
+
     /// Whether to show queue.
     pub show_queue: bool,
     pub active_main: ActiveMain,
@@ -61,9 +69,13 @@ pub struct App<'a> {
 impl<'a> App<'a> {
     pub fn from(config: Config) -> Result<Self> {
         config.validate()?;
+        let config_clone = config.clone();
         Ok(Self {
             is_running: true,
             config,
+            root_dir_input_buffer: String::new(),
+            root_dir_input_active: false,
+            root_dir: PathBuf::from(config_clone.root_dir),
             show_queue: false,
             active_main: ActiveMain::None,
             hovered_section: HoveredSection::Main,
@@ -249,6 +261,12 @@ impl<'a> App<'a> {
 
         let config = Config {
             show_greeting: false,
+            root_dir: self
+                .root_dir
+                .clone()
+                .to_str()
+                .expect("could not convert root_dir to str")
+                .to_string(),
             key_bindings: self.config.key_bindings.clone(),
             hover_color: self.config.hover_color.clone(),
             progress_color: self.config.progress_color.clone(),

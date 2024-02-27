@@ -15,13 +15,16 @@ use ratatui::prelude::Direction;
 use ratatui::text::Text;
 use ratatui::widgets::{Block, BorderType, Borders, Paragraph, Wrap};
 use ratatui::Frame;
-
 pub fn render(app: &mut App, frame: &mut Frame) {
     if app.config.show_greeting {
         render_greeting(frame);
-    } else {
-        render_app(app, frame);
+        return;
     }
+    if !app.root_dir.exists() {
+        render_root_dir_input(app, frame);
+        return;
+    }
+    render_app(app, frame);
 }
 
 fn render_app(app: &mut App, frame: &mut Frame) {
@@ -81,4 +84,30 @@ fn render_greeting(frame: &mut Frame) {
                 .border_type(BorderType::Rounded),
         ).alignment(Alignment::Center).wrap(Wrap::default()), frame.size(),
     );
+}
+
+fn render_root_dir_input(app: &mut App, frame: &mut Frame) {
+    let chunks = Layout::default()
+        .direction(Direction::Vertical)
+        .constraints([
+            Constraint::Min(1),
+            Constraint::Length(3),
+            Constraint::Min(0),
+        ])
+        .split(frame.size());
+
+    app.root_dir_input_active = true;
+    // `Line` with vec of `Span` might be better
+    let searchbar = Paragraph::new(Text::from(format!(
+        "{}_",
+        app.root_dir_input_buffer.clone()
+    )))
+    .block(
+        Block::default()
+            .title("Enter absolut path to root dir.")
+            .borders(Borders::ALL)
+            .border_type(BorderType::Rounded),
+    );
+
+    frame.render_widget(searchbar, chunks[1]);
 }
