@@ -125,6 +125,9 @@ dependencies = [
 [[package]]
 name = "echo-localfiles"
 version = "0.1.0"
+dependencies = [
+ "tracing",
+]
 
 [[package]]
 name = "echo-tui"
