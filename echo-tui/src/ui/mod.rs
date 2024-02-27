@@ -90,10 +90,11 @@ fn render_root_dir_input(app: &mut App, frame: &mut Frame) {
     let chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([
-            Constraint::Min(1),
+            Constraint::Min(2),
             Constraint::Length(3),
             Constraint::Min(0),
         ])
+        .horizontal_margin(2)
         .split(frame.size());
 
     app.root_dir_input_active = true;

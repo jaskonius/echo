@@ -49,7 +49,7 @@ pub struct App<'a> {
     /// Whether the user is currently typing.
     pub root_dir_input_active: bool,
     /// Root directory of music.
-    pub root_dir: PathBuf,
+    pub root_dir: PathBuf, // might move it into config for consistency
 
     /// Whether to show queue.
     pub show_queue: bool,
