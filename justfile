@@ -5,6 +5,7 @@ alias c := check
 check:
   cargo fmt 
   cargo clippy -- -Dwarnings -Dclippy::unwrap_used
+  cargo doc
   cargo c 
   cargo t 
 

@@ -9,3 +9,5 @@ description = "Library for handling local music files"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+rodio = {version = "0.17.3", default-features = false, features = ["symphonia-all"]}
+tracing.workspace = true
