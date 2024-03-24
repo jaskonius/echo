@@ -11,3 +11,4 @@ description = "Library for handling local music files"
 [dependencies]
 rodio = {version = "0.17.3", default-features = false, features = ["symphonia-all"]}
 tracing.workspace = true
+walkdir = "2.5.0"
