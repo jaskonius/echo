@@ -14,6 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+    - name: Install
+      run: sudo apt install -y libasound2-dev
     - name: Build
       run: cargo build --verbose
 
@@ -30,9 +32,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+    - name: Install
+      run: sudo apt install -y libasound2-dev
     - name: Check
       run: cargo c --verbose
-    - uses: actions/checkout@v4
     - name: Test
       run: cargo t --verbose
-    
