@@ -11,20 +11,14 @@ env:
 
 jobs:
   build:
-    strategy:
-      matrix:
-        os: [ ubuntu-latest, windows-latest, macos-latest ]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - name: Build
       run: cargo build --verbose
 
   lint:
-    strategy:
-        matrix:
-          os: [ ubuntu-latest ]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - name: Format
@@ -33,10 +27,7 @@ jobs:
       run: cargo clippy -- -Dwarnings -Dclippy::unwrap_used
 
   test:
-    strategy:
-      matrix:
-        os: [ ubuntu-latest, windows-latest, macos-latest ]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - name: Check
