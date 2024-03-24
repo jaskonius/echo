@@ -8,3 +8,5 @@ Somewhere down my todo list there is a settings menu but as it is dead simple to
 
 ## Build
 On Fedora, you need to install `alsa-lib-devel` (required by rodio / alsa-sys)
+
+On Debian based systems, install `libasound2-dev` (required by rodio / alsa-sys)
