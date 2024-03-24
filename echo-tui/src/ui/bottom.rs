@@ -45,12 +45,16 @@ fn render_song_and_artist(_app: &mut App, chunk: Rect, frame: &mut Frame) {
     frame.render_widget(artist, chunks[1]);
 }
 
-fn render_progress_bar(_app: &mut App, chunk: Rect, frame: &mut Frame) {
+fn render_progress_bar(app: &mut App, chunk: Rect, frame: &mut Frame) {
     let progress_percentage = ((3f32 * 60f32) / (5f32 * 60f32 + 20f32)) * 100f32;
     let progress_bar = Gauge::default()
         .percent(progress_percentage as u16)
         .label("3:00 / 5:20")
-        .gauge_style(Style::default().fg(Color::Cyan).bg(Color::Gray));
+        .gauge_style(
+            Style::default()
+                .fg(app.config.progress_color.parse().expect("invalid color"))
+                .bg(Color::Gray),
+        );
 
     frame.render_widget(progress_bar, chunk);
 }
