@@ -16,4 +16,5 @@ run: check
 push MESSAGE: check 
   git add -A 
   git commit -m "{{MESSAGE}}"
-  git push
+  git push -u origin
+  git push -u github
