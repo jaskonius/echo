@@ -3,7 +3,7 @@ use anyhow::{Context, Result};
 use ratatui::backend::CrosstermBackend;
 
 use std::{fs, io};
-use tracing::info;
+use tracing::{debug, info};
 
 use tracing_subscriber::filter::LevelFilter;
 
@@ -21,6 +21,7 @@ fn main() -> Result<()> {
 
     let config: Config = confy::load(APP_NAME, CONFIG_FILE).context("Failed to load config")?;
     info!("using config: {:?}", config);
+    debug!("logging level is DEBUG");
 
     let mut app = App::from(config).context("Failed to initialize app")?;
 
@@ -64,6 +65,7 @@ fn setup_logging() {
         fs::File::create(config_dir.join("echo.log")).expect("Failed to create log file");
 
     // TODO: is there a better way to check for debug build vs release build?
+    // It might be better to just use RUST_LOG env variable
     #[cfg(debug_assertions)]
     let log_level = LevelFilter::DEBUG;
     #[cfg(not(debug_assertions))]
