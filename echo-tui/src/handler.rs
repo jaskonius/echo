@@ -20,7 +20,7 @@ pub fn handle_key_events(key_event: KeyEvent, app: &mut App) -> Result<()> {
                     todo!("handle wrong input");
                 }
                 app.root_dir_input_active = false;
-                app.root_dir = path.clone();
+                app.root_dir.clone_from(&path);
                 info!("set {:?} as root_dir", path);
             }
             KeyCode::Esc => app.quit(),
