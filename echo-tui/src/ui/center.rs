@@ -136,26 +136,28 @@ fn render_table(
         Style::default().add_modifier(Modifier::BOLD)
     };
 
-    let table = Table::new(rows.iter().map(|row| row.to_row()))
-        .header(
-            Row::new(header)
-                .style(Style::default().add_modifier(Modifier::BOLD | Modifier::UNDERLINED)),
-        )
-        .widths(&[
+    let table = Table::new(
+        rows.iter().map(|row| row.to_row()),
+        [
             Constraint::Percentage(25),
             Constraint::Percentage(25),
             Constraint::Percentage(25),
             Constraint::Length(8),
-        ])
-        .highlight_style(table_highlight_style)
-        .highlight_symbol(">")
-        .block(
-            Block::default()
-                .title(title)
-                .borders(Borders::ALL)
-                .border_type(BorderType::Rounded)
-                .border_style(border_style),
-        );
+        ],
+    )
+    .header(
+        Row::new(header)
+            .style(Style::default().add_modifier(Modifier::BOLD | Modifier::UNDERLINED)),
+    )
+    .highlight_style(table_highlight_style)
+    .highlight_symbol(">")
+    .block(
+        Block::default()
+            .title(title)
+            .borders(Borders::ALL)
+            .border_type(BorderType::Rounded)
+            .border_style(border_style),
+    );
 
     let table_state = if app.show_queue {
         &app.queue_table.state

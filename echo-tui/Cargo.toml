@@ -21,10 +21,10 @@ anyhow = "1.0.76"
 
 # TUI 
 crossterm = "0.27.0"
-ratatui = "0.24.0"
+ratatui = "0.27.0"
 
 # Config
-confy = "0.5.1"
+confy = "0.6.1"
 serde = { version = "1.0.193", features = ["derive"] }
 
 
